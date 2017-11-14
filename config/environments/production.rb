@@ -77,7 +77,20 @@ Rails.application.configure do
     logger.formatter = config.log_formatter
     config.logger    = ActiveSupport::TaggedLogging.new(logger)
   end
-
+  
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.default_url_options = { host: 'https://sucide-squad-api.herokuapp.com/' }
+  
+  config.action_mailer.smtp_settings = {
+      :address        => 'smtp.sendgrid.net',
+      :port           => '587',
+      :authentication => :plain,
+      :user_name      => ENV['APIKEY'],
+      :password       => ENV['PASSWORD'],
+      :domain         => 'sucide-squad-api.herokuapp.com',
+      :enable_starttls_auto => true
+  }
+  
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
 end
