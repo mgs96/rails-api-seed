@@ -42,13 +42,13 @@ Rails.application.configure do
   config.action_mailer.default_url_options = { host: 'https://back-end-salazarthecoder.c9users.io' }
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
-    user_name:      'mauricio.guzman.salazar@gmail.com',
-    password:       '96051006469',
-    domain:         'localhost:3000',
-    address:        'smtp.gmail.com',
-    port:           '587',
-    authentication: :plain,
-    enable_starttls_auto: true
+      address:        'smtp.sendgrid.net',
+      port:           '587',
+      authentication: plain,
+      user_name:      ENV['APIKEY'],
+      password:       ENV['PASSWORD'],
+      domain:         'sucide-squad-api.herokuapp.com',
+      enable_starttls_auto : true
   }
 
 
