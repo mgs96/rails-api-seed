@@ -44,11 +44,11 @@ Rails.application.configure do
   config.action_mailer.smtp_settings = {
       address:        'smtp.sendgrid.net',
       port:           '587',
-      authentication: plain,
+      authentication: :plain,
       user_name:      ENV['APIKEY'],
       password:       ENV['PASSWORD'],
       domain:         'sucide-squad-api.herokuapp.com',
-      enable_starttls_auto : true
+      enable_starttls_auto: true
   }
 
 
