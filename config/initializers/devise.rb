@@ -39,6 +39,13 @@ Rails.application.config.to_prepare do              # to_prepare ensures that th
     module OmniAuth
         module Strategies
             class GoogleOauth2
+                def get_access_token(request)
+                    json = JSON.parse(request.body.read)
+                    puts json
+                    json = json.dup.deep_transform_keys { |key| key.to_s.underscore }
+                    raise "invalid token '#{json['access_token']}'" unless verify_token(json['access_token'])
+                    ::OAuth2::AccessToken.from_hash(client, json)
+                  end            
 
                 def verify_token(id_token)
                     return false unless id_token
@@ -50,29 +57,29 @@ Rails.application.config.to_prepare do              # to_prepare ensures that th
                     true
                 end
 
-                def get_access_token(request)
-                    puts "hasta la vista baby"
-                    puts request.params['idToken']
-                    puts "hasta la vista baby"
-                    if request.xhr? && request.params['code']
-                        puts "Primeraaaaaaaaaaaaaaaaaaaa"
-                      verifier = request.params['code']
-                      redirect_uri = request.params['redirect_uri'] || 'postmessage'
-                      client.auth_code.get_token(verifier, get_token_options(redirect_uri), deep_symbolize(options.auth_token_params || {}))
-                    elsif request.params['code'] && request.params['redirect_uri']
-                        puts "Segundaaaaaaaaaaaaaaaaaaaaaaaa"
-                      verifier = request.params['code']
-                      redirect_uri = request.params['redirect_uri']
-                      client.auth_code.get_token(verifier, get_token_options(redirect_uri), deep_symbolize(options.auth_token_params || {}))
-                    elsif verify_token(request.params['idToken'])
-                        puts "Terceraaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-                      ::OAuth2::AccessToken.from_hash(client, request.params.dup)
-                    else
-                        puts "Cuartaaaaaaaaaaaaaaaaaaaaaaaaaa"
-                      verifier = request.params['code']
-                      client.auth_code.get_token(verifier, get_token_options(callback_url), deep_symbolize(options.auth_token_params))
-                    end
-                end            
+                # def get_access_token(request)
+                #     puts "hasta la vista baby"
+                #     puts request.params['idToken']
+                #     puts "hasta la vista baby"
+                #     if request.xhr? && request.params['code']
+                #         puts "Primeraaaaaaaaaaaaaaaaaaaa"
+                #       verifier = request.params['code']
+                #       redirect_uri = request.params['redirect_uri'] || 'postmessage'
+                #       client.auth_code.get_token(verifier, get_token_options(redirect_uri), deep_symbolize(options.auth_token_params || {}))
+                #     elsif request.params['code'] && request.params['redirect_uri']
+                #         puts "Segundaaaaaaaaaaaaaaaaaaaaaaaa"
+                #       verifier = request.params['code']
+                #       redirect_uri = request.params['redirect_uri']
+                #       client.auth_code.get_token(verifier, get_token_options(redirect_uri), deep_symbolize(options.auth_token_params || {}))
+                #     elsif verify_token(request.params['idToken'])
+                #         puts "Terceraaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                #       ::OAuth2::AccessToken.from_hash(client, request.params.dup)
+                #     else
+                #         puts "Cuartaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                #       verifier = request.params['code']
+                #       client.auth_code.get_token(verifier, get_token_options(callback_url), deep_symbolize(options.auth_token_params))
+                #     end
+                # end            
             end
         end
     end
