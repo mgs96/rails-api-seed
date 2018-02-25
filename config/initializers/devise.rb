@@ -41,12 +41,12 @@ Rails.application.config.to_prepare do              # to_prepare ensures that th
             class GoogleOauth2
 
                 def verify_token(access_token)
-                    puts "putaso"
-                    puts access_token
                     return false unless access_token
                     raw_response = client.request(:get, 'https://www.googleapis.com/oauth2/v3/tokeninfo',
                                                   params: { access_token: access_token }).parsed
                     raw_response['aud'] == options.client_id || options.authorized_client_ids.include?(raw_response['aud'])
+                    puts "recontraputaso"
+                    puts raw_response
                 end
 
                 def get_access_token(request)
