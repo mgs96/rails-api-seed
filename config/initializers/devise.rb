@@ -30,7 +30,7 @@ Rails.application.config.to_prepare do              # to_prepare ensures that th
             class GoogleOauth2
                 def get_access_token(request)
                     puts "COLETO----------------------------------------------------------------------------------------"
-                    puts request.inspect
+                    puts request.params.inspect
                     puts "COLETO----------------------------------------------------------------------------------------"
                     if request.xhr? && request.params['code']
                       verifier = request.params['code']
