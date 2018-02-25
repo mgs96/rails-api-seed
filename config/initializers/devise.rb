@@ -52,7 +52,7 @@ Rails.application.config.to_prepare do              # to_prepare ensures that th
 
                 def get_access_token(request)
                     puts "hasta la vista baby"
-                    puts request.params['accessToken']
+                    puts request.params['idToken']
                     puts "hasta la vista baby"
                     if request.xhr? && request.params['code']
                         puts "Primeraaaaaaaaaaaaaaaaaaaa"
