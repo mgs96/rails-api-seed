@@ -40,6 +40,7 @@ Rails.application.config.to_prepare do              # to_prepare ensures that th
         module Strategies
             class GoogleOauth2
                 def get_access_token(request)
+                    puts request.params.inspect
                     if request.xhr? && request.params['code']
                         puts "Primeraaaaaaaaaaaaaaaaaaaa"
                       verifier = request.params['code']
