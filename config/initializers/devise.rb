@@ -41,7 +41,7 @@ Rails.application.config.to_prepare do              # to_prepare ensures that th
             class GoogleOauth2
 
                 def verify_token(id_token)
-                    return false unless access_token
+                    return false unless id_token
                     raw_response = client.request(:get, 'https://www.googleapis.com/oauth2/v3/tokeninfo',
                                                   params: { id_token: id_token }).parsed
                     raw_response['aud'] == options.client_id || options.authorized_client_ids.include?(raw_response['aud'])
