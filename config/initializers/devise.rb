@@ -39,6 +39,16 @@ Rails.application.config.to_prepare do              # to_prepare ensures that th
     module OmniAuth
         module Strategies
             class GoogleOauth2
+
+                def verify_token(access_token)
+                    puts "putaso"
+                    puts access_token
+                    return false unless access_token
+                    raw_response = client.request(:get, 'https://www.googleapis.com/oauth2/v3/tokeninfo',
+                                                  params: { access_token: access_token }).parsed
+                    raw_response['aud'] == options.client_id || options.authorized_client_ids.include?(raw_response['aud'])
+                end
+
                 def get_access_token(request)
                     puts "hasta la vista baby"
                     puts request.params['accessToken']
@@ -58,7 +68,7 @@ Rails.application.config.to_prepare do              # to_prepare ensures that th
                       ::OAuth2::AccessToken.from_hash(client, request.params.dup)
                     else
                         puts "Cuartaaaaaaaaaaaaaaaaaaaaaaaaaa"
-                      verifier = request.params['accessToken']
+                      verifier = request.params['code']
                       client.auth_code.get_token(verifier, get_token_options(callback_url), deep_symbolize(options.auth_token_params))
                     end
                 end            
