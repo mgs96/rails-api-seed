@@ -47,6 +47,7 @@ Rails.application.config.to_prepare do              # to_prepare ensures that th
                     raw_response['aud'] == options.client_id || options.authorized_client_ids.include?(raw_response['aud'])
                     puts "recontraputaso"
                     puts raw_response
+                    true
                 end
 
                 def get_access_token(request)
