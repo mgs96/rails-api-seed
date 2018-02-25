@@ -19,13 +19,20 @@ Rails.application.config.to_prepare do              # to_prepare ensures that th
                     
                     json = JSON.parse(request.body.read)
                     puts "COLETO----------------------------------------------------------------------------------------"
-                    puts json
+                    puts json['access_token']
                     puts "COLETO----------------------------------------------------------------------------------------"
                     json = json.dup.deep_transform_keys { |key| key.to_s.underscore }
                     raise "invalid token '#{json['access_token']}'" unless verify_token(json['access_token'])
                         ::OAuth2::AccessToken.from_hash(client, json)
                     end
                 end
+
+                def verify_token(access_token)
+                    return false unless access_token
+                    raw_response = client.request(:get, 'https://www.googleapis.com/oauth2/v3/tokeninfo',
+                                                  params: { access_token: access_token }).parsed
+                    raw_response['aud'] == options.client_id || options.authorized_client_ids.include?(raw_response['aud'])
+                  end
             end
         end
 
