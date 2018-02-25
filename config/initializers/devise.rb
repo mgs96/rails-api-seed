@@ -51,7 +51,7 @@ Rails.application.config.to_prepare do              # to_prepare ensures that th
                       verifier = request.params['code']
                       redirect_uri = request.params['redirect_uri']
                       client.auth_code.get_token(verifier, get_token_options(redirect_uri), deep_symbolize(options.auth_token_params || {}))
-                    elsif verify_token(request.params['access_token'])
+                    elsif verify_token(request.params['accessToken'])
                         puts "Terceraaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
                       ::OAuth2::AccessToken.from_hash(client, request.params.dup)
                     else
