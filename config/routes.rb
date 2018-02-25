@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  mount_devise_token_auth_for 'User', at: 'auth', defaults: { format: :json }
+  mount_devise_token_auth_for 'User', at: 'auth', { omniauth_callbacks: 'users/omniauth_callbacks' },  defaults: { format: :json }
 
   get 'logout', to: 'sessions#destroy', as: 'logout'
   get 'auth/failure', to: redirect('/')
