@@ -12,16 +12,36 @@ Rails.application.config.to_prepare do              # to_prepare ensures that th
         end
     end
 
-    module OmniAuth
-        module Strategies
-            class GoogleOauth2
-                def get_access_token(request)
-                json = JSON.parse(request.body.read)
-                json = json.dup.deep_transform_keys { |key| key.to_s.underscore }
-                raise "invalid token '#{json['access_token']}'" unless verify_token(json['access_token'])
-                ::OAuth2::AccessToken.from_hash(client, json)
-                end
-            end
+    # module OmniAuth
+    #     module Strategies
+    #         class GoogleOauth2
+    #             def get_access_token(request)
+    #             json = JSON.parse(request.body.read)
+    #             json = json.dup.deep_transform_keys { |key| key.to_s.underscore }
+    #             raise "invalid token '#{json['access_token']}'" unless verify_token(json['access_token'])
+    #             ::OAuth2::AccessToken.from_hash(client, json)
+    #             end
+    #         end
+    #     end
+    # end
+
+    def get_access_token(request)
+        puts "COLETO----------------------------------------------------------------------------------------"
+        puts request
+        puts "COLETO----------------------------------------------------------------------------------------"
+        if request.xhr? && request.params['code']
+          verifier = request.params['code']
+          redirect_uri = request.params['redirect_uri'] || 'postmessage'
+          client.auth_code.get_token(verifier, get_token_options(redirect_uri), deep_symbolize(options.auth_token_params || {}))
+        elsif request.params['code'] && request.params['redirect_uri']
+          verifier = request.params['code']
+          redirect_uri = request.params['redirect_uri']
+          client.auth_code.get_token(verifier, get_token_options(redirect_uri), deep_symbolize(options.auth_token_params || {}))
+        elsif verify_token(request.params['access_token'])
+          ::OAuth2::AccessToken.from_hash(client, request.params.dup)
+        else
+          verifier = request.params['code']
+          client.auth_code.get_token(verifier, get_token_options(callback_url), deep_symbolize(options.auth_token_params))
         end
-    end
+      end
 end
