@@ -41,13 +41,18 @@ Rails.application.config.to_prepare do              # to_prepare ensures that th
             class GoogleOauth2
                 def get_access_token(request)
                     json = JSON.parse(request.body.read)
+                    puts "ELCOLE DE COLES---------------------------------------------------------------------"
                     puts json
+                    puts "ELCOLE DE COLES---------------------------------------------------------------------"
                     json = json.dup.deep_transform_keys { |key| key.to_s.underscore }
                     raise "invalid token '#{json['access_token']}'" unless verify_token(json['access_token'])
                     ::OAuth2::AccessToken.from_hash(client, json)
                   end            
 
                 def verify_token(id_token)
+                    puts "ELCOLE DE COLES---------------------------------------------------------------------"
+                    puts id_token
+                    puts "ELCOLE DE COLES---------------------------------------------------------------------"
                     return false unless id_token
                     raw_response = client.request(:get, 'https://www.googleapis.com/oauth2/v3/tokeninfo',
                                                   params: { id_token: id_token }).parsed
