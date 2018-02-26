@@ -9,9 +9,7 @@ class Mobile::IonicController < ApplicationController
     params = {:id_token => id_token}
     uri = URI.parse('https://www.googleapis.com/oauth2/v3/tokeninfo')
     uri.query = URI.encode_www_form(params)
-    puts uri
     response = Net::HTTP.get_response(uri)
-    data = JSON.parse(response.body)
-    puts data
+    puts response.inspect
   end
 end
