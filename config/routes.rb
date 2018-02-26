@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  mount_devise_token_auth_for 'User', at: 'auth', controllers: { omniauth_callbacks: 'users/omniauth_callbacks' },  defaults: { format: :json }
+  mount_devise_token_auth_for 'User', at: 'auth',  defaults: { format: :json }
 
   get 'logout', to: 'sessions#destroy', as: 'logout'
   get 'auth/failure', to: redirect('/')
@@ -11,7 +11,7 @@ Rails.application.routes.draw do
     end
   end
 
-  namespace :ionic do
-    post 'google_auth', to: 'users#validate_token'
+  namespace :mobile do
+    post 'google_auth', controller: 'ionic'
   end
 end
