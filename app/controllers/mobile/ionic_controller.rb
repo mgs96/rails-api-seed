@@ -10,6 +10,7 @@ class Mobile::IonicController < ApplicationController
     uri = URI.parse('https://www.googleapis.com/oauth2/v3/tokeninfo')
     uri.query = URI.encode_www_form(params)
     response = Net::HTTP.get_response(uri)
+    puts response.inspect
 
     if response.code == 200
       data = JSON.parse(response.body)
