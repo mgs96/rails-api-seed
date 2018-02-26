@@ -11,6 +11,7 @@ class Mobile::IonicController < ApplicationController
     uri.query = URI.encode_www_form(params)
     puts uri
     response = Net::HTTP.get_response(uri)
-    puts response.inspect
+    data = JSON.parse(response.body)
+    puts data
   end
 end
