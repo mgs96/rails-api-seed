@@ -12,6 +12,6 @@ class Mobile::IonicController < ApplicationController
     puts uri
     response = Net::HTTP.get_response(uri)
     data = JSON.parse(response.body)
-    puts data
+    render json: data
   end
 end
