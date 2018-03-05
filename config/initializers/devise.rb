@@ -4,13 +4,36 @@ Devise.setup do |config|
     config.omniauth :google_oauth2, ENV["GOOGLE_KEY"], ENV["GOOGLE_SECRET"], {:provider_ignores_state => true}
 end
 
-# Rails.application.config.to_prepare do              # to_prepare ensures that the monkey patching happens before the first request
-#     Devise::OmniauthCallbacksController.class_eval do # reopen the class
-#         def failure                                     # redefine the failure method
-#         set_flash_message! :alert, :failure, kind: OmniAuth::Utils.camelize(failed_strategy.name), reason: failure_message
-#         redirect_to after_omniauth_failure_path_for(resource_name)
-#         end
-#     end
+OmniAuth.config.full_host = Rails.env.production? ? 'https://domain.com' : 'http://localhost:3000'
+
+Rails.application.config.to_prepare do              # to_prepare ensures that the monkey patching happens before the first request
+    Devise::OmniauthCallbacksController.class_eval do # reopen the class
+        def failure                                     # redefine the failure method
+            set_flash_message! :alert, :failure, kind: OmniAuth::Utils.camelize(failed_strategy.name), reason: failure_message
+            redirect_to after_omniauth_failure_path_for(resource_name)
+        end
+
+        def redirect_callbacks
+
+            # derive target redirect route from 'resource_class' param, which was set
+            # before authentication.
+            puts "EL COLE DE COLES"
+            puts request
+            devise_mapping = [request.env['omniauth.params']['namespace_name'],
+                                request.env['omniauth.params']['resource_class'].underscore.gsub('/', '_')].compact.join('_')
+            path = "#{Devise.mappings[devise_mapping.to_sym].fullpath}/#{params[:provider]}/callback"
+            klass = request.scheme == 'https' ? URI::HTTPS : URI::HTTP
+            redirect_route = klass.build(host: request.host, port: request.port, path: path).to_s
+        
+            # preserve omniauth info for success route. ignore 'extra' in twitter
+            # auth response to avoid CookieOverflow.
+            session['dta.omniauth.auth'] = request.env['omniauth.auth'].except('extra')
+            session['dta.omniauth.params'] = request.env['omniauth.params']
+        
+            redirect_to redirect_route
+        end
+    end
+end
 
 #     # module OmniAuth
 #     #     module Strategies

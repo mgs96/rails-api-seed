@@ -11,7 +11,6 @@ class Mobile::IonicController < ApplicationController
     uri.query = URI.encode_www_form(params)
     response = Net::HTTP.get_response(uri)
     data = JSON.parse(response.body)
-    puts data
-    render :json => data
+    render json: data
   end
 end
